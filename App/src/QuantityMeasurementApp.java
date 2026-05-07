@@ -1,125 +1,96 @@
+package org.example;
+
 public class QuantityMeasurementApp {
 
-    public static <U extends IMeasurable>
-    void demonstrateEquality(
+    public static <U extends IMeasurable> void demonstrateEquality(
             Quantity<U> q1,
             Quantity<U> q2) {
 
-        System.out.println(q1 + " equals " + q2 +
-                " -> " + q1.equals(q2));
+        System.out.println("Equality:");
+        System.out.println(q1 + " == " + q2 + " : " + q1.equals(q2));
     }
 
-    public static <U extends IMeasurable>
-    void demonstrateConversion(
+    public static <U extends IMeasurable> void demonstrateConversion(
             Quantity<U> quantity,
             U targetUnit) {
 
-        System.out.println(quantity +
-                " converted to " +
-                targetUnit + " -> " +
-                quantity.convertTo(targetUnit));
+        System.out.println("Conversion:");
+        System.out.println(quantity + " -> "
+                + quantity.convertTo(targetUnit));
     }
 
-    public static <U extends IMeasurable>
-    void demonstrateAddition(
+    public static <U extends IMeasurable> void demonstrateAddition(
             Quantity<U> q1,
             Quantity<U> q2,
             U targetUnit) {
 
-        System.out.println(q1 + " + " + q2 +
-                " -> " +
-                q1.add(q2, targetUnit));
+        Quantity<U> result = q1.add(q2, targetUnit);
+
+        System.out.println("Addition:");
+        System.out.println(q1 + " + " + q2 + " = " + result);
+    }
+
+    public static <U extends IMeasurable> void demonstrateSubtraction(
+            Quantity<U> q1,
+            Quantity<U> q2,
+            U targetUnit) {
+
+        Quantity<U> result = q1.subtract(q2, targetUnit);
+
+        System.out.println("Subtraction:");
+        System.out.println(q1 + " - " + q2 + " = " + result);
+    }
+
+    public static <U extends IMeasurable> void demonstrateDivision(
+            Quantity<U> q1,
+            Quantity<U> q2) {
+
+        double result = q1.divide(q2);
+
+        System.out.println("Division:");
+        System.out.println(q1 + " / " + q2 + " = " + result);
     }
 
     public static void main(String[] args) {
 
-        // LENGTH OPERATIONS
-
         Quantity<LengthUnit> length1 =
-                new Quantity<>(1.0, LengthUnit.FEET);
+                new Quantity<>(10.0, LengthUnit.FEET);
 
         Quantity<LengthUnit> length2 =
-                new Quantity<>(12.0, LengthUnit.INCHES);
+                new Quantity<>(6.0, LengthUnit.INCHES);
 
         demonstrateEquality(length1, length2);
 
-        demonstrateConversion(
-                length1,
-                LengthUnit.INCHES);
+        demonstrateConversion(length1, LengthUnit.INCHES);
 
-        demonstrateAddition(
-                length1,
-                length2,
-                LengthUnit.FEET);
+        demonstrateAddition(length1, length2, LengthUnit.FEET);
 
-        // WEIGHT OPERATIONS
+        demonstrateSubtraction(length1, length2, LengthUnit.FEET);
+
+        demonstrateDivision(length1, length2);
 
         Quantity<WeightUnit> weight1 =
-                new Quantity<>(1.0, WeightUnit.KILOGRAM);
+                new Quantity<>(10.0, WeightUnit.KILOGRAM);
 
         Quantity<WeightUnit> weight2 =
-                new Quantity<>(1000.0, WeightUnit.GRAM);
+                new Quantity<>(5000.0, WeightUnit.GRAM);
 
-        demonstrateEquality(weight1, weight2);
+        demonstrateAddition(weight1, weight2, WeightUnit.KILOGRAM);
 
-        demonstrateConversion(
-                weight1,
-                WeightUnit.GRAM);
+        demonstrateSubtraction(weight1, weight2, WeightUnit.KILOGRAM);
 
-        demonstrateAddition(
-                weight1,
-                weight2,
-                WeightUnit.KILOGRAM);
-
-        // CROSS CATEGORY CHECK
-
-        System.out.println(
-                length1.equals(weight1));
-
-        System.out.println(
-                "\n===== VOLUME OPERATIONS =====");
+        demonstrateDivision(weight1, weight2);
 
         Quantity<VolumeUnit> volume1 =
-                new Quantity<>(1.0,
-                        VolumeUnit.LITRE);
+                new Quantity<>(5.0, VolumeUnit.LITRE);
 
         Quantity<VolumeUnit> volume2 =
-                new Quantity<>(1000.0,
-                        VolumeUnit.MILLILITRE);
+                new Quantity<>(500.0, VolumeUnit.MILLILITRE);
 
-        Quantity<VolumeUnit> volume3 =
-                new Quantity<>(1.0,
-                        VolumeUnit.GALLON);
+        demonstrateAddition(volume1, volume2, VolumeUnit.LITRE);
 
-        demonstrateEquality(volume1, volume2);
+        demonstrateSubtraction(volume1, volume2, VolumeUnit.LITRE);
 
-        demonstrateConversion(
-                volume1,
-                VolumeUnit.MILLILITRE);
-
-        demonstrateConversion(
-                volume3,
-                VolumeUnit.LITRE);
-
-        demonstrateAddition(
-                volume1,
-                volume2,
-                VolumeUnit.LITRE);
-
-        demonstrateAddition(
-                volume1,
-                volume3,
-                VolumeUnit.MILLILITRE);
-
-        System.out.println(
-                "\n===== CROSS CATEGORY CHECK =====");
-
-        System.out.println(
-                volume1.equals(
-                        new Quantity<>(
-                                1.0,
-                                LengthUnit.FEET)));
-
-
+        demonstrateDivision(volume1, volume2);
     }
 }

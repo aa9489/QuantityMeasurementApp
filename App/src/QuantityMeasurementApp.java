@@ -75,5 +75,51 @@ public class QuantityMeasurementApp {
 
         System.out.println(
                 length1.equals(weight1));
+
+        System.out.println(
+                "\n===== VOLUME OPERATIONS =====");
+
+        Quantity<VolumeUnit> volume1 =
+                new Quantity<>(1.0,
+                        VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> volume2 =
+                new Quantity<>(1000.0,
+                        VolumeUnit.MILLILITRE);
+
+        Quantity<VolumeUnit> volume3 =
+                new Quantity<>(1.0,
+                        VolumeUnit.GALLON);
+
+        demonstrateEquality(volume1, volume2);
+
+        demonstrateConversion(
+                volume1,
+                VolumeUnit.MILLILITRE);
+
+        demonstrateConversion(
+                volume3,
+                VolumeUnit.LITRE);
+
+        demonstrateAddition(
+                volume1,
+                volume2,
+                VolumeUnit.LITRE);
+
+        demonstrateAddition(
+                volume1,
+                volume3,
+                VolumeUnit.MILLILITRE);
+
+        System.out.println(
+                "\n===== CROSS CATEGORY CHECK =====");
+
+        System.out.println(
+                volume1.equals(
+                        new Quantity<>(
+                                1.0,
+                                LengthUnit.FEET)));
+
+
     }
 }

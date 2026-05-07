@@ -1,20 +1,20 @@
 import java.util.Objects;
 
-public class QuantityWeight {
+public class Quantity<U extends IMeasurable> {
 
     private final double value;
-    private final WeightUnit unit;
+    private final U unit;
 
     private static final double EPSILON = 0.0001;
 
-    public QuantityWeight(double value, WeightUnit unit) {
+    public Quantity(double value, U unit) {
 
         if (unit == null) {
             throw new IllegalArgumentException("Unit cannot be null");
         }
 
         if (!Double.isFinite(value)) {
-            throw new IllegalArgumentException("Invalid weight value");
+            throw new IllegalArgumentException("Invalid value");
         }
 
         this.value = value;
@@ -25,12 +25,11 @@ public class QuantityWeight {
         return value;
     }
 
-    public WeightUnit getUnit() {
+    public U getUnit() {
         return unit;
     }
 
-    // Convert to another unit
-    public QuantityWeight convertTo(WeightUnit targetUnit) {
+    public Quantity<U> convertTo(U targetUnit) {
 
         if (targetUnit == null) {
             throw new IllegalArgumentException("Target unit cannot be null");
@@ -41,39 +40,41 @@ public class QuantityWeight {
         double convertedValue =
                 targetUnit.convertFromBaseUnit(baseValue);
 
-        return new QuantityWeight(convertedValue, targetUnit);
+        convertedValue = round(convertedValue);
+
+        return new Quantity<>(convertedValue, targetUnit);
     }
 
-    // Addition with first operand unit
-    public QuantityWeight add(QuantityWeight other) {
-
+    public Quantity<U> add(Quantity<U> other) {
         return add(other, this.unit);
     }
 
-    // Addition with explicit target unit
-    public QuantityWeight add(QuantityWeight other,
-                              WeightUnit targetUnit) {
+    public Quantity<U> add(Quantity<U> other, U targetUnit) {
 
         if (other == null) {
-            throw new IllegalArgumentException("Other weight cannot be null");
+            throw new IllegalArgumentException("Quantity cannot be null");
         }
 
         if (targetUnit == null) {
             throw new IllegalArgumentException("Target unit cannot be null");
         }
 
-        double thisBase =
-                this.unit.convertToBaseUnit(this.value);
+        double base1 = unit.convertToBaseUnit(this.value);
 
-        double otherBase =
-                other.unit.convertToBaseUnit(other.value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
 
-        double sumBase = thisBase + otherBase;
+        double sum = base1 + base2;
 
         double result =
-                targetUnit.convertFromBaseUnit(sumBase);
+                targetUnit.convertFromBaseUnit(sum);
 
-        return new QuantityWeight(result, targetUnit);
+        result = round(result);
+
+        return new Quantity<>(result, targetUnit);
+    }
+
+    private double round(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
     @Override
@@ -83,15 +84,18 @@ public class QuantityWeight {
             return true;
         }
 
-        if (obj == null ||
-                getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        QuantityWeight other = (QuantityWeight) obj;
+        Quantity<?> other = (Quantity<?>) obj;
+
+        if (this.unit.getClass() != other.unit.getClass()) {
+            return false;
+        }
 
         double thisBase =
-                unit.convertToBaseUnit(value);
+                this.unit.convertToBaseUnit(this.value);
 
         double otherBase =
                 other.unit.convertToBaseUnit(other.value);
@@ -105,9 +109,7 @@ public class QuantityWeight {
         double baseValue =
                 unit.convertToBaseUnit(value);
 
-        return Objects.hash(
-                Math.round(baseValue / EPSILON)
-        );
+        return Objects.hash(round(baseValue));
     }
 
     @Override
